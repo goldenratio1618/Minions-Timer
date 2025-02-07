@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="34dp"
+    android:viewportWidth="744.0945"
+    android:viewportHeight="1052.3622">
+    <!-- 
+         Arrow with a protrusion:
+         • Start at (0,526) for the arrow tip.
+         • Go up‐and–to‑the–right to (80,496) (the upper corner of the head).
+         • Then drop vertically to (80,516) to form the protrusion.
+         • Draw horizontally right to (700,516) to form the top of the shaft.
+         • Continue down to (700,556), then back left to (80,556).
+         • Close the shape back at (0,526).
+    -->
+    <path
+        android:fillColor="#f0e682"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.7857"
+        android:pathData="M0,536 L120,36 L120,236 L700,236 L700,836 L120,836 L120,1036 Z" />
+</vector>

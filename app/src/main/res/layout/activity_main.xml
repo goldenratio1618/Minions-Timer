@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- Pre-game settings container -->
+    <LinearLayout
+        android:id="@+id/settingsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/settingsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Time Controls (max 10 min per team)" />
+
+        <!-- Header row for team names arranged as columns -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/blueTeamHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Blue Team"
+                android:textSize="18sp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/yellowTeamHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Yellow Team"
+                android:textSize="18sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Grid for time settings (rows correspond to time types) -->
+        <GridLayout
+            android:id="@+id/timeSettingsGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins">
+
+            <!-- Row 0: Minutes -->
+            <EditText
+                android:id="@+id/blueMinutesEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:hint="Minutes" />
+
+            <EditText
+                android:id="@+id/yellowMinutesEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:hint="Minutes" />
+
+            <!-- Row 1: Seconds -->
+            <EditText
+                android:id="@+id/blueSecondsEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:hint="Seconds" />
+
+            <EditText
+                android:id="@+id/yellowSecondsEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:hint="Seconds" />
+        </GridLayout>
+
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+
+    <!-- Timer container, initially hidden -->
+    <FrameLayout
+        android:id="@+id/timerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <!-- Arrow image filling the entire screen -->
+        <ImageView
+            android:id="@+id/arrowImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/arrow"
+            android:scaleType="fitXY" />
+
+        <!-- Large time display overlaid on top -->
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="144sp"     
+            android:textColor="@android:color/white"  
+            android:layout_gravity="center" />
+
+        <!-- Adjust Time Button positioned at the top right -->
+        <Button
+            android:id="@+id/btnAdjustTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjust"
+            android:textSize="16sp"
+            android:layout_gravity="top|end" />
+
+        <!-- Control buttons container at the very bottom -->
+        <LinearLayout
+            android:id="@+id/timerControlLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="16dp"
+            android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/minusButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-30"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/pauseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pause"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/plusButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+30"
+                    android:textSize="16sp" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</RelativeLayout>
