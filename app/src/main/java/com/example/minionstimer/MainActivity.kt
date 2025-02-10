@@ -134,13 +134,15 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize SoundPool to play our sound effects
         val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
+
         soundPool = SoundPool.Builder()
             .setAudioAttributes(audioAttributes)
             .setMaxStreams(4)
             .build()
+
         // (Place your own sound files in res/raw and use the proper names.)
         beepLowSoundId = soundPool.load(this, R.raw.buzzer_sound, 1)
         startSoundId = soundPool.load(this, R.raw.yellow_start_turn, 1)
