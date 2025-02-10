@@ -98,10 +98,12 @@ class MainActivity : AppCompatActivity() {
     private var beepNormalSoundId: Int = 0
     private var beepLowSoundId: Int = 0
     private var beepMediumSoundId: Int = 0
+    private var startSoundId: Int = 0
+    private var beepSoundId: Int = 0
     private var dingSoundId: Int = 0
 
     // The set of seconds remaining that trigger a “normal” beep
-    private val beepTriggerTimes = setOf(60, 30, 10, 5, 4, 3, 2, 1)
+    private val beepTriggerTimes = setOf(60, 30, 15, 5, 4, 3, 2, 1)
 
     // Add a flag to remember if we paused during grace period:
     private var pausedDuringGrace = false
@@ -141,7 +143,10 @@ class MainActivity : AppCompatActivity() {
             .build()
         // (Place your own sound files in res/raw and use the proper names.)
         beepLowSoundId = soundPool.load(this, R.raw.buzzer_sound, 1)
-        dingSoundId = soundPool.load(this, R.raw.yellow_start_turn, 1)
+        startSoundId = soundPool.load(this, R.raw.yellow_start_turn, 1)
+        beepSoundId = soundPool.load(this, R.raw.beep, 1)
+        dingSoundId = soundPool.load(this, R.raw.ding, 1)
+        
         
         // Set up our listeners:
         startButton.setOnClickListener { startGame() }
@@ -228,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         timerState = TimerState.RUNNING
 
         // Play the “ding ding ding” sound.
-        soundPool.play(dingSoundId, 1f, 1f, 1, 0, 1f)
+        soundPool.play(startSoundId, 1f, 1f, 1, 0, 1f)
 
         // Update the arrow indicator (its color and rotation) based on which team is active.
         updateArrowIndicator()
@@ -266,7 +271,7 @@ class MainActivity : AppCompatActivity() {
 
                 // If the remaining time is one of the trigger times, play the normal beep.
                 if (beepTriggerTimes.contains(currentRemainingTime)) {
-                    playTone(1200.0, 100)
+                    soundPool.play(beepSoundId, 1f, 1f, 1, 0, 1f)
                 }
 
                 // If time has run out, call onTimeOut() and stop ticking.
@@ -397,7 +402,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     updateTimeDisplay(graceRemaining)
                     // Play the medium‑pitched beep every second.
-                    playTone(600.0, 100)
+                    soundPool.play(dingSoundId, 1f, 1f, 1, 0, 1f)
                     graceRemaining--
                     handler.postDelayed(this, 1000)
                 }
