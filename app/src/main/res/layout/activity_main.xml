@@ -7,97 +7,140 @@
     tools:context=".MainActivity">
 
     <!-- Pre-game settings container -->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/settingsContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/settingsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Set Time Controls (max 10 min per team)" />
-
-        <!-- Header row for team names arranged as columns -->
         <LinearLayout
+            android:id="@+id/settingsBackground"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/blueTeamHeader"
+            <View
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Blue Team"
-                android:textSize="18sp"
-                android:gravity="center" />
+                android:background="@color/yellow_tint" />
 
-            <TextView
-                android:id="@+id/yellowTeamHeader"
+            <View
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Yellow Team"
-                android:textSize="18sp"
-                android:gravity="center" />
+                android:background="@color/blue_tint" />
         </LinearLayout>
 
-        <!-- Grid for time settings (rows correspond to time types) -->
-        <GridLayout
-            android:id="@+id/timeSettingsGrid"
+        <LinearLayout
+            android:id="@+id/settingsContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:alignmentMode="alignMargins">
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/settingsBottomBar"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Row 0: Minutes -->
-            <EditText
-                android:id="@+id/blueMinutesEditText"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/teamPickersRow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:hint="Minutes" />
+                android:orientation="horizontal"
+                android:paddingTop="16dp">
 
-            <EditText
-                android:id="@+id/yellowMinutesEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:hint="Minutes" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <!-- Row 1: Seconds -->
-            <EditText
-                android:id="@+id/blueSecondsEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:hint="Seconds" />
+                    <TextView
+                        android:id="@+id/yellowTeamHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Yellow Team"
+                        android:textSize="18sp"
+                        android:gravity="center" />
 
-            <EditText
-                android:id="@+id/yellowSecondsEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:hint="Seconds" />
-        </GridLayout>
+                    <TextView
+                        android:id="@+id/yellowTimeDisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textSize="42sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/time_display_background"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
 
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/blueTeamHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Blue Team"
+                        android:textSize="18sp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/blueTimeDisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textSize="42sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/time_display_background"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/settingsBottomBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start"
-            android:layout_marginTop="16dp"/>
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
+
+            <Button
+                android:id="@+id/startButton"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:text="START"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/hex_button"
+                android:backgroundTint="@color/red" />
+
+            <ImageButton
+                android:id="@+id/swapButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_toStartOf="@id/startButton"
+                android:layout_alignBottom="@id/startButton"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/hex_button"
+                android:backgroundTint="@color/hex_neutral"
+                android:contentDescription="Swap team times"
+                android:scaleType="centerInside"
+                android:padding="14dp"
+                android:src="@drawable/ic_swap_arrows" />
+        </RelativeLayout>
+    </RelativeLayout>
 
     <!-- Timer container, initially hidden -->
     <FrameLayout
@@ -124,14 +167,32 @@
             android:textColor="@android:color/white"  
             android:layout_gravity="center" />
 
-        <!-- Adjust Time Button positioned at the top right -->
         <Button
+            android:id="@+id/faceButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="top|start"
+            android:layout_margin="16dp"
+            android:background="@drawable/hex_button"
+            android:backgroundTint="@color/hex_neutral"
+            android:text="🤔"
+            android:textSize="20sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Adjust Time Button positioned at the top right -->
+        <ImageButton
             android:id="@+id/btnAdjustTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Adjust"
-            android:textSize="16sp"
-            android:layout_gravity="top|end" />
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/hex_button"
+            android:backgroundTint="@color/hex_neutral"
+            android:contentDescription="Adjust settings"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_menu_manage"
+            android:tint="@android:color/black" />
 
         <!-- Control buttons container at the very bottom -->
         <LinearLayout
@@ -145,27 +206,193 @@
 
                 <Button
                     android:id="@+id/minusButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/hex_button"
+                    android:backgroundTint="@color/hex_neutral"
                     android:text="-30"
-                    android:textSize="16sp" />
+                    android:textColor="@android:color/black"
+                    android:textSize="22sp" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/pauseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pause"
-                    android:textSize="16sp" />
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/hex_button"
+                    android:backgroundTint="@color/red"
+                    android:contentDescription="Pause"
+                    android:padding="18dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pause"
+                    android:tint="@android:color/white" />
 
                 <Button
                     android:id="@+id/plusButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/hex_button"
+                    android:backgroundTint="@color/hex_neutral"
                     android:text="+30"
-                    android:textSize="16sp" />
+                    android:textColor="@android:color/black"
+                    android:textSize="22sp" />
         </LinearLayout>
 
+        <FrameLayout
+            android:id="@+id/infinityButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/hex_button"
+            android:backgroundTint="@color/hex_neutral"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Add five minutes"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
+
+            <TextView
+                android:id="@+id/infinityLabel"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/triangle_down"
+                android:gravity="center"
+                android:text="+5"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </FrameLayout>
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/keypadOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:elevation="24dp">
+
+        <LinearLayout
+            android:id="@+id/keypadPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true">
+
+            <GridLayout
+                android:id="@+id/keypadGrid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="4"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true">
+
+                <Button
+                    android:id="@+id/keypadKey1"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="1"
+                    android:text="1"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey2"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="2"
+                    android:text="2"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey3"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="3"
+                    android:text="3"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey4"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="4"
+                    android:text="4"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey5"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="5"
+                    android:text="5"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey6"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="6"
+                    android:text="6"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey7"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="7"
+                    android:text="7"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey8"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="8"
+                    android:text="8"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey9"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="9"
+                    android:text="9"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey00"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="00"
+                    android:text="00"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKey0"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="0"
+                    android:text="0"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKeyBackspace"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="backspace"
+                    android:text="⌫"
+                    android:textSize="20sp" />
+            </GridLayout>
+        </LinearLayout>
+    </FrameLayout>
 
 </RelativeLayout>

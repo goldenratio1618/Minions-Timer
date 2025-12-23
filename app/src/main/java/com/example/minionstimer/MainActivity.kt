@@ -13,6 +13,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.random.Random
 
 private fun playTone(frequency: Double, durationMs: Int) {
     val sampleRate = 44100
@@ -81,17 +82,21 @@ class MainActivity : AppCompatActivity() {
     // Views
     private lateinit var timeTextView: TextView
     private lateinit var arrowImageView: ImageView
-    private lateinit var pauseButton: Button
+    private lateinit var pauseButton: ImageButton
     private lateinit var plusButton: Button
     private lateinit var minusButton: Button
-    private lateinit var btnAdjustTime: Button
+    private lateinit var btnAdjustTime: ImageButton
     private lateinit var settingsContainer: View
     private lateinit var timerContainer: View
-    private lateinit var blueMinutesEditText: EditText
-    private lateinit var blueSecondsEditText: EditText
-    private lateinit var yellowMinutesEditText: EditText
-    private lateinit var yellowSecondsEditText: EditText
+    private lateinit var blueTimeDisplay: TextView
+    private lateinit var yellowTimeDisplay: TextView
     private lateinit var startButton: Button
+    private lateinit var swapButton: ImageButton
+    private lateinit var infinityButton: View
+    private lateinit var faceButton: Button
+    private lateinit var keypadOverlay: View
+    private lateinit var keypadPanel: View
+    private lateinit var keypadGrid: GridLayout
 
     // SoundPool for playing beeps and dings
     private lateinit var soundPool: SoundPool
@@ -109,6 +114,15 @@ class MainActivity : AppCompatActivity() {
     private var pausedDuringGrace = false
 
     private var wasGraceTurn = false
+    private var faceResetRunnable: Runnable? = null
+
+    private val maxMinutes = 10
+    private val faceResetDelayMs = 5000L
+    private val maxDigitLength = 4
+
+    private var blueInputDigits = ""
+    private var yellowInputDigits = ""
+    private var activeInputTeam: Team? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,11 +140,15 @@ class MainActivity : AppCompatActivity() {
         btnAdjustTime = findViewById(R.id.btnAdjustTime)
         settingsContainer = findViewById(R.id.settingsContainer)
         timerContainer = findViewById(R.id.timerContainer)
-        blueMinutesEditText = findViewById(R.id.blueMinutesEditText)
-        blueSecondsEditText = findViewById(R.id.blueSecondsEditText)
-        yellowMinutesEditText = findViewById(R.id.yellowMinutesEditText)
-        yellowSecondsEditText = findViewById(R.id.yellowSecondsEditText)
+        blueTimeDisplay = findViewById(R.id.blueTimeDisplay)
+        yellowTimeDisplay = findViewById(R.id.yellowTimeDisplay)
         startButton = findViewById(R.id.startButton)
+        swapButton = findViewById(R.id.swapButton)
+        infinityButton = findViewById(R.id.infinityButton)
+        faceButton = findViewById(R.id.faceButton)
+        keypadOverlay = findViewById(R.id.keypadOverlay)
+        keypadPanel = findViewById(R.id.keypadPanel)
+        keypadGrid = findViewById(R.id.keypadGrid)
 
         // Initialize SoundPool to play our sound effects
         val audioAttributes = AudioAttributes.Builder()
@@ -152,9 +170,14 @@ class MainActivity : AppCompatActivity() {
         
         // Set up our listeners:
         startButton.setOnClickListener { startGame() }
+        swapButton.setOnClickListener { swapTeamTimes() }
         pauseButton.setOnClickListener { togglePause() }
-        plusButton.setOnClickListener { adjustTime(30) }
+        plusButton.setOnClickListener { addThirtySeconds() }
         minusButton.setOnClickListener { adjustTime(-30) }
+        infinityButton.setOnClickListener { addInfinityTime() }
+        faceButton.setOnClickListener { triggerRandomFace() }
+        blueTimeDisplay.setOnClickListener { showKeypad(Team.BLUE) }
+        yellowTimeDisplay.setOnClickListener { showKeypad(Team.YELLOW) }
         // In TimerActivity.kt
         btnAdjustTime.setOnClickListener {
             wasGraceTurn = (timerState == TimerState.GRACE)
@@ -165,17 +188,8 @@ class MainActivity : AppCompatActivity() {
             // Reset the timer state to PRE_GAME so we can adjust settings.
             timerState = TimerState.PRE_GAME
 
-            // Convert the total times (in seconds) to minutes and seconds.
-            val blueMinutes = blueTotalTime / 60
-            val blueSeconds = blueTotalTime % 60
-            val yellowMinutes = yellowTotalTime / 60
-            val yellowSeconds = yellowTotalTime % 60
-
-            // Pre-fill the EditText fields with the current time values.
-            blueMinutesEditText.setText(blueMinutes.toString())
-            blueSecondsEditText.setText(blueSeconds.toString())
-            yellowMinutesEditText.setText(yellowMinutes.toString())
-            yellowSecondsEditText.setText(yellowSeconds.toString())
+            // Pre-fill the time displays with the current time values.
+            syncInputDigitsFromTotals()
 
             // Switch the UI back to the time settings screen.
             settingsContainer.visibility = View.VISIBLE
@@ -184,24 +198,25 @@ class MainActivity : AppCompatActivity() {
 
         // Tapping anywhere in the timerContainer will end the turn (or resume after timeout)
         timerContainer.setOnClickListener { onTimerTapped() }
+
+        setupKeypad()
+        syncInputDigitsFromTotals()
     }
 
     // Called when the user taps “Start” on the settings screen.
     private fun startGame() {
-        // Get each team’s time from the EditTexts (in minutes and seconds).
-        val blueMinutes = blueMinutesEditText.text.toString().toIntOrNull() ?: 0
-        val blueSeconds = blueSecondsEditText.text.toString().toIntOrNull() ?: 0
-        val yellowMinutes = yellowMinutesEditText.text.toString().toIntOrNull() ?: 0
-        val yellowSeconds = yellowSecondsEditText.text.toString().toIntOrNull() ?: 0
-
-        val blueTotal = blueMinutes * 60 + blueSeconds
-        val yellowTotal = yellowMinutes * 60 + yellowSeconds
+        // Get each team’s time from the digit inputs (MMSS).
+        val blueTotal = secondsFromDigits(blueInputDigits)
+        val yellowTotal = secondsFromDigits(yellowInputDigits)
 
         // Enforce “max 10 minutes” (600 seconds) per team and a positive time.
-        if (blueTotal <= 0 || blueTotal > 600 || yellowTotal <= 0 || yellowTotal > 600) {
+        val maxTotalSeconds = maxMinutes * 60
+        if (blueTotal <= 0 || blueTotal > maxTotalSeconds || yellowTotal <= 0 || yellowTotal > maxTotalSeconds) {
             Toast.makeText(this, "Please set a time between 1 and 10 minutes for each team", Toast.LENGTH_SHORT).show()
             return
         }
+
+        hideKeypad()
 
         blueTotalTime = blueTotal
         yellowTotalTime = yellowTotal
@@ -233,6 +248,7 @@ class MainActivity : AppCompatActivity() {
     // Begins a team’s turn.
     private fun startTurn() {
         timerState = TimerState.RUNNING
+        updatePauseButtonIcon()
 
         // Play the “ding ding ding” sound.
         soundPool.play(startSoundId, 1f, 1f, 1, 0, 1f)
@@ -249,12 +265,12 @@ class MainActivity : AppCompatActivity() {
     private fun updateArrowIndicator() {
         when (currentTeam) {
             Team.BLUE -> {
-                arrowImageView.rotation = 0f // default arrow image points left
+                arrowImageView.rotation = 180f // point right for blue
                 arrowImageView.setColorFilter(resources.getColor(R.color.blue, null))
                 timeTextView.setTextColor(resources.getColor(android.R.color.white, null))
             }
             Team.YELLOW -> {
-                arrowImageView.rotation = 180f // flip the arrow
+                arrowImageView.rotation = 0f // point left for yellow
                 arrowImageView.setColorFilter(resources.getColor(R.color.yellow, null))
                 timeTextView.setTextColor(resources.getColor(android.R.color.black, null))
             }
@@ -301,6 +317,7 @@ class MainActivity : AppCompatActivity() {
         timerState = TimerState.TIME_OUT
         updateTimeDisplay(0)
         soundPool.play(beepLowSoundId, 1f, 1f, 1, 0, 1f)
+        updatePauseButtonIcon()
         // Now the timer “stalls” until the user taps the screen.
     }
 
@@ -357,6 +374,7 @@ class MainActivity : AppCompatActivity() {
             }
             else -> { /* do nothing */ }
         }
+        updatePauseButtonIcon()
     }
 
     // Resumes the grace period using the current remaining time.
@@ -390,6 +408,7 @@ class MainActivity : AppCompatActivity() {
     // Starts the 5‑second grace period.
     private fun startGracePeriod() {
         timerState = TimerState.GRACE
+        updatePauseButtonIcon()
 
         // Change the UI: display a brown circle (a drawable) instead of the arrow.
         arrowImageView.setImageResource(R.drawable.brown_circle)
@@ -427,10 +446,159 @@ class MainActivity : AppCompatActivity() {
         startTurn()
     }
 
+    private fun swapTeamTimes() {
+        val yellowDigits = yellowInputDigits
+        yellowInputDigits = blueInputDigits
+        blueInputDigits = yellowDigits
+        updateTimeDisplays()
+    }
+
+    private fun addThirtySeconds() {
+        if (timerState == TimerState.TIME_OUT) {
+            currentRemainingTime = 30
+            timerState = TimerState.RUNNING
+            updateTimeDisplay(currentRemainingTime)
+            updatePauseButtonIcon()
+            startTimerRunnable()
+            return
+        }
+        adjustTime(30)
+    }
+
+    private fun addInfinityTime() {
+        val boostSeconds = 5 * 60
+        val isGraceLike = timerState == TimerState.GRACE || (timerState == TimerState.PAUSED && pausedDuringGrace)
+        when {
+            isGraceLike || timerState == TimerState.TIME_OUT -> {
+                timerRunnable?.let { handler.removeCallbacks(it) }
+                graceRunnable?.let { handler.removeCallbacks(it) }
+                pausedDuringGrace = false
+                currentRemainingTime = boostSeconds
+                timerState = TimerState.RUNNING
+                arrowImageView.setImageResource(R.drawable.arrow)
+                updateArrowIndicator()
+                updateTimeDisplay(currentRemainingTime)
+                updatePauseButtonIcon()
+                startTimerRunnable()
+            }
+            timerState == TimerState.RUNNING || timerState == TimerState.PAUSED -> {
+                currentRemainingTime += boostSeconds
+                updateTimeDisplay(currentRemainingTime)
+            }
+            else -> { /* do nothing */ }
+        }
+    }
+
+    private fun triggerRandomFace() {
+        val face = if (Random.nextBoolean()) "🙂" else "🙁"
+        faceButton.text = face
+        faceButton.isEnabled = false
+        faceResetRunnable?.let { handler.removeCallbacks(it) }
+        faceResetRunnable = Runnable {
+            faceButton.text = "🤔"
+            faceButton.isEnabled = true
+        }
+        handler.postDelayed(faceResetRunnable!!, faceResetDelayMs)
+    }
+
+    private fun updatePauseButtonIcon() {
+        val isPaused = timerState == TimerState.PAUSED
+        pauseButton.setImageResource(if (isPaused) R.drawable.ic_play else R.drawable.ic_pause)
+        pauseButton.contentDescription = if (isPaused) "Play" else "Pause"
+    }
+
+    private fun setupKeypad() {
+        keypadOverlay.setOnClickListener { hideKeypad() }
+        keypadPanel.setOnClickListener { }
+        for (i in 0 until keypadGrid.childCount) {
+            val child = keypadGrid.getChildAt(i)
+            if (child is Button) {
+                child.setOnClickListener {
+                    val input = child.tag?.toString() ?: return@setOnClickListener
+                    handleKeypadInput(input)
+                }
+            }
+        }
+    }
+
+    private fun showKeypad(team: Team) {
+        activeInputTeam = team
+        keypadOverlay.visibility = View.VISIBLE
+    }
+
+    private fun hideKeypad() {
+        keypadOverlay.visibility = View.GONE
+        activeInputTeam = null
+    }
+
+    private fun handleKeypadInput(input: String) {
+        val team = activeInputTeam ?: return
+        val currentDigits = if (team == Team.BLUE) blueInputDigits else yellowInputDigits
+        val updatedDigits = when (input) {
+            "backspace" -> currentDigits.dropLast(1)
+            "00" -> when {
+                currentDigits.length <= maxDigitLength - 2 -> currentDigits + "00"
+                currentDigits.length == maxDigitLength - 1 -> currentDigits + "0"
+                else -> currentDigits
+            }
+            else -> {
+                if (currentDigits.length < maxDigitLength) currentDigits + input else currentDigits
+            }
+        }
+
+        val clampedDigits = clampDigitsToMax(updatedDigits)
+        if (team == Team.BLUE) {
+            blueInputDigits = clampedDigits
+        } else {
+            yellowInputDigits = clampedDigits
+        }
+        updateTimeDisplays()
+    }
+
+    private fun clampDigitsToMax(digits: String): String {
+        val totalSeconds = secondsFromDigits(digits)
+        if (totalSeconds <= maxMinutes * 60) {
+            return digits
+        }
+        return digitsFromSeconds(maxMinutes * 60)
+    }
+
+    private fun secondsFromDigits(digits: String): Int {
+        val trimmed = digits.takeLast(maxDigitLength)
+        val padded = trimmed.padStart(maxDigitLength, '0')
+        val minutes = padded.substring(0, 2).toInt()
+        val seconds = padded.substring(2, 4).toInt()
+        return minutes * 60 + seconds
+    }
+
+    private fun digitsFromSeconds(totalSeconds: Int): String {
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        return String.format("%02d%02d", minutes, seconds)
+    }
+
+    private fun updateTimeDisplays() {
+        blueTimeDisplay.text = formatDigits(blueInputDigits)
+        yellowTimeDisplay.text = formatDigits(yellowInputDigits)
+    }
+
+    private fun formatDigits(digits: String): String {
+        val trimmed = digits.takeLast(maxDigitLength)
+        val padded = trimmed.padStart(maxDigitLength, '0')
+        val minutes = padded.substring(0, 2)
+        val seconds = padded.substring(2, 4)
+        return "$minutes:$seconds"
+    }
+
+    private fun syncInputDigitsFromTotals() {
+        blueInputDigits = digitsFromSeconds(blueTotalTime)
+        yellowInputDigits = digitsFromSeconds(yellowTotalTime)
+        updateTimeDisplays()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
         soundPool.release()
     }
 }
-

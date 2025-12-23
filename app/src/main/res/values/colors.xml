@@ -2,5 +2,8 @@
     <color name="blue">#0000FF</color>
     <color name="yellow">#FFFF00</color>
     <color name="brown">#A52A2A</color>
+    <color name="blue_tint">#1A0000FF</color>
+    <color name="yellow_tint">#1AFFFF00</color>
+    <color name="red">#D32F2F</color>
+    <color name="hex_neutral">#DADADA</color>
 </resources>
-
