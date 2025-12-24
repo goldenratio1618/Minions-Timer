@@ -58,7 +58,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Yellow Team"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:gravity="center" />
 
                     <TextView
@@ -66,14 +66,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="00:00"
-                        android:textSize="42sp"
+                        android:textSize="46sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:padding="12dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/time_display_background"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:fontFeatureSettings="tnum" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -87,7 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Blue Team"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:gravity="center" />
 
                     <TextView
@@ -95,14 +96,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="00:00"
-                        android:textSize="42sp"
+                        android:textSize="46sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:padding="12dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/time_display_background"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:fontFeatureSettings="tnum" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -121,7 +123,7 @@
                 android:layout_height="96dp"
                 android:text="START"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/hex_button"
                 android:backgroundTint="@color/red" />
@@ -150,7 +152,7 @@
                 android:background="@drawable/hex_button"
                 android:backgroundTint="@color/hex_neutral"
                 android:text="🤔"
-                android:textSize="28sp"
+                android:textSize="32sp"
                 android:textColor="@android:color/black" />
         </RelativeLayout>
     </RelativeLayout>
@@ -176,9 +178,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00"
-            android:textSize="144sp"     
-            android:textColor="@android:color/white"  
-            android:layout_gravity="center" />
+            android:textSize="158sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:fontFeatureSettings="tnum" />
 
         <LinearLayout
             android:id="@+id/timerTopControlLayout"
@@ -197,7 +200,7 @@
                 android:background="@drawable/hex_button"
                 android:backgroundTint="@color/hex_neutral"
                 android:text="🤔"
-                android:textSize="28sp"
+                android:textSize="32sp"
                 android:textColor="@android:color/black" />
 
             <ImageButton
@@ -258,7 +261,7 @@
                     android:backgroundTint="@color/hex_neutral"
                     android:text="-30"
                     android:textColor="@android:color/black"
-                    android:textSize="22sp" />
+                    android:textSize="24sp" />
 
                 <ImageButton
                     android:id="@+id/pauseButton"
@@ -281,7 +284,7 @@
                     android:backgroundTint="@color/hex_neutral"
                     android:text="+30"
                     android:textColor="@android:color/black"
-                    android:textSize="22sp" />
+                    android:textSize="24sp" />
         </LinearLayout>
 
     </FrameLayout>
@@ -322,7 +325,7 @@
                     android:layout_height="72dp"
                     android:tag="1"
                     android:text="1"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey2"
@@ -330,7 +333,7 @@
                     android:layout_height="72dp"
                     android:tag="2"
                     android:text="2"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey3"
@@ -338,7 +341,7 @@
                     android:layout_height="72dp"
                     android:tag="3"
                     android:text="3"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey4"
@@ -346,7 +349,7 @@
                     android:layout_height="72dp"
                     android:tag="4"
                     android:text="4"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey5"
@@ -354,7 +357,7 @@
                     android:layout_height="72dp"
                     android:tag="5"
                     android:text="5"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey6"
@@ -362,7 +365,7 @@
                     android:layout_height="72dp"
                     android:tag="6"
                     android:text="6"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey7"
@@ -370,7 +373,7 @@
                     android:layout_height="72dp"
                     android:tag="7"
                     android:text="7"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey8"
@@ -378,7 +381,7 @@
                     android:layout_height="72dp"
                     android:tag="8"
                     android:text="8"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey9"
@@ -386,7 +389,7 @@
                     android:layout_height="72dp"
                     android:tag="9"
                     android:text="9"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <Button
                     android:id="@+id/keypadKey0"
@@ -394,7 +397,7 @@
                     android:layout_height="72dp"
                     android:tag="0"
                     android:text="0"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <ImageButton
                     android:id="@+id/keypadKeyEnter"
@@ -414,7 +417,7 @@
                     android:layout_height="72dp"
                     android:tag="backspace"
                     android:text="⌫"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
             </GridLayout>
         </LinearLayout>
     </FrameLayout>

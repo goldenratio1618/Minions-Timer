@@ -2,7 +2,21 @@
 <resources>
     <!-- Base application theme. You can change the parent to your desired theme -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here if needed -->
+        <item name="android:fontFamily">@font/share_tech_mono_regular</item>
+        <item name="android:textViewStyle">@style/AppTextView</item>
+        <item name="android:buttonStyle">@style/AppButton</item>
+        <item name="android:imageButtonStyle">@style/AppImageButton</item>
+    </style>
+
+    <style name="AppTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/share_tech_mono_regular</item>
+    </style>
+
+    <style name="AppButton" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">@font/share_tech_mono_regular</item>
+    </style>
+
+    <style name="AppImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:fontFamily">@font/share_tech_mono_regular</item>
     </style>
 </resources>
-
