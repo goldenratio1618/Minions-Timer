@@ -392,6 +392,14 @@
                     android:textSize="22sp" />
 
                 <Button
+                    android:id="@+id/keypadKeyBackspace"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="backspace"
+                    android:text="⌫"
+                    android:textSize="22sp" />
+
+                <Button
                     android:id="@+id/keypadKey0"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
@@ -410,14 +418,6 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_play"
                     android:tint="@android:color/white" />
-
-                <Button
-                    android:id="@+id/keypadKeyBackspace"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:tag="backspace"
-                    android:text="⌫"
-                    android:textSize="22sp" />
             </GridLayout>
         </LinearLayout>
     </FrameLayout>
