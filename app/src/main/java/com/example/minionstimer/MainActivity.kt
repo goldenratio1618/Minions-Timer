@@ -523,6 +523,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showKeypad(team: Team) {
         activeInputTeam = team
+        if (team == Team.BLUE) {
+            blueInputDigits = ""
+        } else {
+            yellowInputDigits = ""
+        }
+        updateTimeDisplays()
         keypadOverlay.visibility = View.VISIBLE
     }
 
@@ -533,6 +539,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleKeypadInput(input: String) {
         val team = activeInputTeam ?: return
+        if (input == "enter") {
+            hideKeypad()
+            return
+        }
         val currentDigits = if (team == Team.BLUE) blueInputDigits else yellowInputDigits
         val updatedDigits = when (input) {
             "backspace" -> currentDigits.dropLast(1)

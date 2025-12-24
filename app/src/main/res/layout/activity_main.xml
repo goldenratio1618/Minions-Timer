@@ -169,27 +169,27 @@
 
         <Button
             android:id="@+id/faceButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="top|start"
             android:layout_margin="16dp"
             android:background="@drawable/hex_button"
             android:backgroundTint="@color/hex_neutral"
             android:text="🤔"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textColor="@android:color/black" />
 
         <!-- Adjust Time Button positioned at the top right -->
         <ImageButton
             android:id="@+id/btnAdjustTime"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="top|end"
             android:layout_margin="16dp"
             android:background="@drawable/hex_button"
             android:backgroundTint="@color/hex_neutral"
             android:contentDescription="Adjust settings"
-            android:padding="12dp"
+            android:padding="14dp"
             android:scaleType="centerInside"
             android:src="@android:drawable/ic_menu_manage"
             android:tint="@android:color/black" />
@@ -241,8 +241,8 @@
 
         <FrameLayout
             android:id="@+id/infinityButton"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:background="@drawable/hex_button"
@@ -254,14 +254,14 @@
 
             <TextView
                 android:id="@+id/infinityLabel"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:background="@drawable/triangle_down"
                 android:gravity="center"
                 android:text="+5"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
         </FrameLayout>
     </FrameLayout>
@@ -369,20 +369,24 @@
                     android:textSize="20sp" />
 
                 <Button
-                    android:id="@+id/keypadKey00"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:tag="00"
-                    android:text="00"
-                    android:textSize="20sp" />
-
-                <Button
                     android:id="@+id/keypadKey0"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
                     android:tag="0"
                     android:text="0"
                     android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/keypadKeyEnter"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:tag="enter"
+                    android:text="ENTER"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/keypad_enter" />
 
                 <Button
                     android:id="@+id/keypadKeyBackspace"

@@ -6,4 +6,5 @@
     <color name="yellow_tint">#1AFFFF00</color>
     <color name="red">#D32F2F</color>
     <color name="hex_neutral">#DADADA</color>
+    <color name="keypad_enter">#3FAE49</color>
 </resources>
