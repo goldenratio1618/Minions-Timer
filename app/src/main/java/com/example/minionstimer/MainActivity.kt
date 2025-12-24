@@ -94,6 +94,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var swapButton: ImageButton
     private lateinit var infinityButton: View
     private lateinit var faceButton: Button
+    private lateinit var settingsFaceButton: Button
     private lateinit var keypadOverlay: View
     private lateinit var keypadPanel: View
     private lateinit var keypadGrid: GridLayout
@@ -114,10 +115,10 @@ class MainActivity : AppCompatActivity() {
     private var pausedDuringGrace = false
 
     private var wasGraceTurn = false
-    private var faceResetRunnable: Runnable? = null
+    private val faceResetRunnables = mutableMapOf<Button, Runnable>()
 
     private val maxMinutes = 10
-    private val faceResetDelayMs = 5000L
+    private val faceResetDelayMs = 3000L
     private val maxDigitLength = 4
 
     private var blueInputDigits = ""
@@ -146,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         swapButton = findViewById(R.id.swapButton)
         infinityButton = findViewById(R.id.infinityButton)
         faceButton = findViewById(R.id.faceButton)
+        settingsFaceButton = findViewById(R.id.settingsFaceButton)
         keypadOverlay = findViewById(R.id.keypadOverlay)
         keypadPanel = findViewById(R.id.keypadPanel)
         keypadGrid = findViewById(R.id.keypadGrid)
@@ -175,7 +177,8 @@ class MainActivity : AppCompatActivity() {
         plusButton.setOnClickListener { addThirtySeconds() }
         minusButton.setOnClickListener { adjustTime(-30) }
         infinityButton.setOnClickListener { addInfinityTime() }
-        faceButton.setOnClickListener { triggerRandomFace() }
+        faceButton.setOnClickListener { triggerRandomFace(faceButton) }
+        settingsFaceButton.setOnClickListener { triggerRandomFace(settingsFaceButton) }
         blueTimeDisplay.setOnClickListener { showKeypad(Team.BLUE) }
         yellowTimeDisplay.setOnClickListener { showKeypad(Team.YELLOW) }
         // In TimerActivity.kt
@@ -489,16 +492,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun triggerRandomFace() {
+    private fun triggerRandomFace(target: Button) {
         val face = if (Random.nextBoolean()) "🙂" else "🙁"
-        faceButton.text = face
-        faceButton.isEnabled = false
-        faceResetRunnable?.let { handler.removeCallbacks(it) }
-        faceResetRunnable = Runnable {
-            faceButton.text = "🤔"
-            faceButton.isEnabled = true
+        target.text = face
+        target.isEnabled = false
+        faceResetRunnables[target]?.let { handler.removeCallbacks(it) }
+        val resetRunnable = Runnable {
+            target.text = "🤔"
+            target.isEnabled = true
         }
-        handler.postDelayed(faceResetRunnable!!, faceResetDelayMs)
+        faceResetRunnables[target] = resetRunnable
+        handler.postDelayed(resetRunnable, faceResetDelayMs)
     }
 
     private fun updatePauseButtonIcon() {
@@ -512,12 +516,8 @@ class MainActivity : AppCompatActivity() {
         keypadPanel.setOnClickListener { }
         for (i in 0 until keypadGrid.childCount) {
             val child = keypadGrid.getChildAt(i)
-            if (child is Button) {
-                child.setOnClickListener {
-                    val input = child.tag?.toString() ?: return@setOnClickListener
-                    handleKeypadInput(input)
-                }
-            }
+            val tag = child.tag?.toString() ?: continue
+            child.setOnClickListener { handleKeypadInput(tag) }
         }
     }
 
