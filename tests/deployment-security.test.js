@@ -9,6 +9,7 @@ const snippet = fs.readFileSync(path.join(__dirname, "..", "deploy", "nginx-mini
 
 test("timer nginx boundary is static-only and read-only", () => {
   assert.match(snippet, /alias \/opt\/minions-timer\/current\/web\//);
+  assert.match(snippet, /rewrite \^ \/timer\/index\.html last;/);
   assert.match(snippet, /limit_except GET \{ deny all; \}/);
   assert.match(snippet, /autoindex off;/);
   assert.doesNotMatch(snippet, /^\s*(?:proxy_pass|fastcgi_pass|uwsgi_pass)\b/m);
