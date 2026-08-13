@@ -42,11 +42,51 @@
     return team === "blue" ? "yellow" : "blue";
   }
 
+  function createAudioCoordinator(resolveAudio, soundIds) {
+    let generation = 0;
+
+    function resetAudio(audio) {
+      if (!audio) return;
+      audio.pause();
+      try {
+        audio.currentTime = 0;
+      } catch (_error) {
+        // Some browsers reject seeking until media metadata is available.
+      }
+    }
+
+    function stopAll() {
+      generation += 1;
+      soundIds.forEach((id) => resetAudio(resolveAudio(id)));
+    }
+
+    function play(id) {
+      stopAll();
+      const audio = resolveAudio(id);
+      if (!audio) return;
+      const playGeneration = generation;
+      let result;
+      try {
+        result = audio.play();
+      } catch (_error) {
+        return;
+      }
+      if (result && typeof result.then === "function") {
+        result.then(() => {
+          if (playGeneration !== generation) resetAudio(audio);
+        }).catch(() => {});
+      }
+    }
+
+    return { play, stopAll };
+  }
+
   return {
     MAX_DIGITS,
     MAX_MINUTES,
     MAX_SECONDS,
     clampDigits,
+    createAudioCoordinator,
     digitsFromSeconds,
     formatDigits,
     formatSeconds,

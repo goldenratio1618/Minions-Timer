@@ -33,3 +33,58 @@ test("switches teams", () => {
   assert.equal(core.oppositeTeam("yellow"), "blue");
   assert.equal(core.oppositeTeam("blue"), "yellow");
 });
+
+test("audio coordinator stops the previous cue before a new cue starts", () => {
+  const sounds = new Map(["buzzer", "ding"].map((id) => [id, {
+    currentTime: 7,
+    pauseCount: 0,
+    playCount: 0,
+    pause() { this.pauseCount += 1; },
+    play() {
+      this.playCount += 1;
+      return Promise.resolve();
+    },
+  }]));
+  const coordinator = core.createAudioCoordinator((id) => sounds.get(id), [...sounds.keys()]);
+
+  coordinator.play("buzzer");
+  coordinator.play("ding");
+
+  assert.equal(sounds.get("buzzer").playCount, 1);
+  assert.ok(sounds.get("buzzer").pauseCount >= 2);
+  assert.equal(sounds.get("buzzer").currentTime, 0);
+  assert.equal(sounds.get("ding").playCount, 1);
+});
+
+test("audio coordinator cancels a delayed play after timer state changes", async () => {
+  let resolvePlay;
+  const delayedPlay = new Promise((resolve) => { resolvePlay = resolve; });
+  const sound = {
+    currentTime: 4,
+    pauseCount: 0,
+    pause() { this.pauseCount += 1; },
+    play() { return delayedPlay; },
+  };
+  const coordinator = core.createAudioCoordinator(() => sound, ["buzzer"]);
+
+  coordinator.play("buzzer");
+  const pausesBeforeStateChange = sound.pauseCount;
+  coordinator.stopAll();
+  resolvePlay();
+  await delayedPlay;
+  await Promise.resolve();
+
+  assert.ok(sound.pauseCount > pausesBeforeStateChange);
+  assert.equal(sound.currentTime, 0);
+});
+
+test("audio coordinator tolerates browsers that reject playback", async () => {
+  const sound = {
+    currentTime: 0,
+    pause() {},
+    play() { return Promise.reject(new Error("blocked")); },
+  };
+  const coordinator = core.createAudioCoordinator(() => sound, ["beep"]);
+  assert.doesNotThrow(() => coordinator.play("beep"));
+  await Promise.resolve();
+});

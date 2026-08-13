@@ -4,6 +4,7 @@ const {
   MAX_DIGITS,
   MAX_SECONDS,
   clampDigits,
+  createAudioCoordinator,
   digitsFromSeconds,
   formatDigits,
   formatSeconds,
@@ -15,6 +16,14 @@ const {
 const $ = (id) => document.getElementById(id);
 const BEEP_TIMES = new Set([60, 30, 15, 5, 4, 3, 2, 1]);
 const GRACE_SECONDS = 5;
+const SOUND_IDS = [
+  "sound-yellow-start",
+  "sound-blue-start",
+  "sound-beep",
+  "sound-buzzer",
+  "sound-ding",
+];
+const audioCoordinator = createAudioCoordinator($, SOUND_IDS);
 
 const state = {
   timerState: "pre-game",
@@ -42,11 +51,11 @@ function showToast(message) {
 }
 
 function playSound(id) {
-  const audio = $(id);
-  if (!audio) return;
-  audio.currentTime = 0;
-  const result = audio.play();
-  if (result && typeof result.catch === "function") result.catch(() => {});
+  audioCoordinator.play(id);
+}
+
+function stopSounds() {
+  audioCoordinator.stopAll();
 }
 
 function updateSetupDisplays() {
@@ -129,14 +138,14 @@ function onTimeOut() {
   renderTimer(true);
 }
 
-function startGrace() {
+function startGrace(initialSound = "sound-ding") {
   stopLoop();
   state.timerState = "grace";
   state.pausedFrom = null;
   state.remaining = GRACE_SECONDS;
   state.deadline = Date.now() + GRACE_SECONDS * 1000;
   state.lastRenderedSecond = null;
-  playSound("sound-ding");
+  playSound(initialSound);
   renderTimer(true);
   startLoop();
 }
@@ -172,11 +181,13 @@ function togglePause() {
   if (state.timerState === "running" || state.timerState === "grace") {
     tick();
     if (state.timerState !== "running" && state.timerState !== "grace") return;
+    stopSounds();
     state.pausedFrom = state.timerState;
     state.timerState = "paused";
     state.deadline = null;
     stopLoop();
   } else if (state.timerState === "paused") {
+    stopSounds();
     state.timerState = state.pausedFrom || "running";
     state.deadline = Date.now() + state.remaining * 1000;
     startLoop();
@@ -185,7 +196,12 @@ function togglePause() {
 }
 
 function adjustTime(delta) {
+  if (state.timerState === "running") {
+    tick();
+    if (state.timerState !== "running") return;
+  }
   if (state.timerState !== "running" && !(state.timerState === "paused" && state.pausedFrom === "running")) return;
+  stopSounds();
   state.remaining = Math.max(0, state.remaining + delta);
   if (state.timerState === "running") state.deadline = Date.now() + state.remaining * 1000;
   if (state.remaining === 0 && state.timerState === "running") {
@@ -198,6 +214,7 @@ function adjustTime(delta) {
 function addFiveMinutes() {
   const graceLike = state.timerState === "grace" || (state.timerState === "paused" && state.pausedFrom === "grace");
   if (graceLike || state.timerState === "time-out") {
+    stopSounds();
     stopLoop();
     state.timerState = "running";
     state.pausedFrom = null;
@@ -212,6 +229,7 @@ function addFiveMinutes() {
 
 function addThirtySeconds() {
   if (state.timerState === "time-out") {
+    stopSounds();
     state.timerState = "running";
     state.remaining = 30;
     state.deadline = Date.now() + 30000;
@@ -224,8 +242,7 @@ function addThirtySeconds() {
 
 function handleTurnSurface() {
   if (state.timerState === "running") {
-    playSound("sound-buzzer");
-    startGrace();
+    startGrace("sound-buzzer");
   } else if (state.timerState === "time-out") {
     startGrace();
   } else if (state.timerState === "grace" || state.timerState === "paused") {
@@ -253,6 +270,7 @@ function startGame() {
 function adjustSettings() {
   state.wasGraceTurn = state.timerState === "grace" || (state.timerState === "paused" && state.pausedFrom === "grace");
   if (state.timerState === "running") tick();
+  stopSounds();
   stopLoop();
   state.timerState = "pre-game";
   state.deadline = null;
