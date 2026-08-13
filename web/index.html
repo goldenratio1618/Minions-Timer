@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#131720" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Minions Timer" />
+    <meta name="description" content="A two-team turn timer for Minions of Darkness." />
+    <title>Minions Timer</title>
+    <link rel="manifest" href="/timer/manifest.webmanifest" />
+    <link rel="icon" href="/timer/assets/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/timer/assets/icon-192.png" />
+    <link rel="stylesheet" href="/timer/style.css" />
+    <script src="/timer/timer-core.js" defer></script>
+    <script src="/timer/app.js" defer></script>
+  </head>
+  <body>
+    <main id="app" class="app" aria-live="polite">
+      <section id="settings-screen" class="screen settings-screen active" aria-label="Timer settings">
+        <div class="settings-background" aria-hidden="true">
+          <div class="yellow-tint"></div>
+          <div class="blue-tint"></div>
+        </div>
+
+        <header class="settings-header">
+          <a class="quiet-link" href="https://minionsofdarkness.com/">Minions of Darkness</a>
+          <h1>Minions Timer</h1>
+          <button id="install-button" class="quiet-button" type="button">Install</button>
+        </header>
+
+        <div class="team-pickers">
+          <button id="yellow-time-display" class="team-picker yellow-picker" type="button" aria-label="Set Yellow Team time">
+            <span>Yellow Team</span>
+            <strong>02:00</strong>
+            <small>Tap to set</small>
+          </button>
+          <button id="blue-time-display" class="team-picker blue-picker" type="button" aria-label="Set Blue Team time">
+            <span>Blue Team</span>
+            <strong>02:00</strong>
+            <small>Tap to set</small>
+          </button>
+        </div>
+
+        <div class="settings-controls">
+          <button id="swap-button" class="hex-button neutral medium" type="button" aria-label="Swap team times">
+            <span class="swap-icon" aria-hidden="true">⇄</span>
+          </button>
+          <button id="start-button" class="hex-button danger large" type="button">Start</button>
+          <button id="settings-face-button" class="hex-button neutral medium face-button" type="button" aria-label="Random face">🤔</button>
+        </div>
+      </section>
+
+      <section id="timer-screen" class="screen timer-screen" aria-label="Active timer">
+        <button id="turn-surface" class="turn-surface yellow" type="button" aria-label="End Yellow Team turn">
+          <span class="turn-arrow" aria-hidden="true"></span>
+          <span id="time-display" class="time-display">02:00</span>
+          <span id="timer-status" class="timer-status">Yellow Team</span>
+        </button>
+
+        <div class="timer-top-controls controls-layer">
+          <button id="face-button" class="hex-button neutral medium face-button" type="button" aria-label="Random face">🤔</button>
+          <button id="adjust-button" class="hex-button neutral medium icon-button" type="button" aria-label="Adjust timer settings">⚙</button>
+          <button id="five-button" class="hex-button neutral medium boost-button" type="button" aria-label="Add five minutes"><span>+5</span></button>
+        </div>
+
+        <div class="timer-bottom-controls controls-layer">
+          <button id="minus-button" class="hex-button neutral medium" type="button" aria-label="Subtract thirty seconds">−30</button>
+          <button id="pause-button" class="hex-button danger large icon-button" type="button" aria-label="Pause"><span id="pause-icon" aria-hidden="true">Ⅱ</span></button>
+          <button id="plus-button" class="hex-button neutral medium" type="button" aria-label="Add thirty seconds">+30</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="keypad-overlay" class="overlay" hidden>
+      <section class="modal keypad-panel" role="dialog" aria-modal="true" aria-labelledby="keypad-title">
+        <h2 id="keypad-title">Set team time</h2>
+        <output id="keypad-display">00:00</output>
+        <div id="keypad-grid" class="keypad-grid">
+          <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button>
+          <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button>
+          <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button>
+          <button type="button" data-key="backspace" aria-label="Backspace">⌫</button><button type="button" data-key="0">0</button><button class="enter-key" type="button" data-key="enter" aria-label="Done">▶</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="install-overlay" class="overlay" hidden>
+      <section class="modal install-panel" role="dialog" aria-modal="true" aria-labelledby="install-title">
+        <button id="install-close" class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 id="install-title">Install Minions Timer</h2>
+        <div id="install-instructions"></div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <audio id="sound-beep" preload="auto" src="/timer/assets/beep.wav"></audio>
+    <audio id="sound-buzzer" preload="auto" src="/timer/assets/buzzer_sound.wav"></audio>
+    <audio id="sound-ding" preload="auto" src="/timer/assets/ding.wav"></audio>
+    <audio id="sound-yellow-start" preload="auto" src="/timer/assets/yellow_start_turn.wav"></audio>
+    <audio id="sound-blue-start" preload="auto" src="/timer/assets/blue_start_turn.mp3"></audio>
+  </body>
+</html>

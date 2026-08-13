@@ -1,0 +1,379 @@
+@font-face {
+  font-family: "Orbitron";
+  src: url("/timer/assets/orbitron_wght.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("/timer/assets/share_tech_mono_regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: "Orbitron", system-ui, sans-serif;
+  background: #131720;
+  color: #f7f7f7;
+  --blue: #165dff;
+  --yellow: #ffe600;
+  --red: #d32f2f;
+  --neutral: #dedede;
+  --brown: #8b3e2f;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+.app,
+.screen {
+  width: 100%;
+  min-height: 100%;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 3px;
+}
+
+.screen {
+  position: relative;
+  display: none;
+}
+
+.screen.active {
+  display: flex;
+}
+
+.settings-screen {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  isolation: isolate;
+}
+
+.settings-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: flex;
+  background: #f4f5f7;
+}
+
+.settings-background > div { flex: 1; }
+.yellow-tint { background: linear-gradient(145deg, #fffef2, #fff4a8); }
+.blue-tint { background: linear-gradient(215deg, #eef4ff, #aac5ff); }
+
+.settings-header {
+  min-height: 42px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  color: #131720;
+}
+
+.settings-header h1 {
+  margin: 0;
+  font-size: clamp(1rem, 3vw, 1.55rem);
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.quiet-link,
+.quiet-button {
+  width: max-content;
+  padding: 9px 12px;
+  border: 1px solid rgb(19 23 32 / 28%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 62%);
+  color: #131720;
+  font: 700 0.68rem/1.1 system-ui, sans-serif;
+  text-decoration: none;
+}
+
+.quiet-button { justify-self: end; }
+
+.team-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: clamp(18px, 5vw, 64px);
+  width: min(900px, 95vw);
+  margin: auto;
+}
+
+.team-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(120px, 33vh, 240px);
+  padding: 12px;
+  border: 3px solid rgb(19 23 32 / 45%);
+  border-radius: 22px;
+  color: #11151d;
+  box-shadow: 0 14px 36px rgb(19 23 32 / 18%), inset 0 0 0 4px rgb(255 255 255 / 48%);
+}
+
+.yellow-picker { background: rgb(255 230 0 / 75%); }
+.blue-picker { background: rgb(22 93 255 / 76%); color: #fff; }
+.team-picker span { font-size: clamp(0.9rem, 2.2vw, 1.35rem); }
+
+.team-picker strong {
+  margin: 6px 0 2px;
+  font: 700 clamp(2.8rem, 8vw, 5.8rem)/1 "Share Tech Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-picker small {
+  font: 700 0.7rem/1 system-ui, sans-serif;
+  opacity: 0.68;
+  text-transform: uppercase;
+}
+
+.settings-controls,
+.timer-top-controls,
+.timer-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.7vw, 16px);
+}
+
+.hex-button {
+  display: inline-grid;
+  place-items: center;
+  aspect-ratio: 1.08;
+  padding: 0;
+  clip-path: polygon(25% 5%, 75% 5%, 98% 50%, 75% 95%, 25% 95%, 2% 50%);
+  color: #11151d;
+  font-weight: 900;
+  text-transform: uppercase;
+  filter: drop-shadow(0 7px 5px rgb(0 0 0 / 24%));
+}
+
+.hex-button:active { transform: translateY(2px) scale(0.97); }
+.hex-button.medium { width: clamp(58px, 11vh, 82px); font-size: clamp(1rem, 3vh, 1.45rem); }
+.hex-button.large { width: clamp(76px, 15vh, 108px); color: #fff; font-size: clamp(0.8rem, 2.4vh, 1.15rem); }
+.neutral { background: var(--neutral); }
+.danger { background: var(--red); }
+.swap-icon { font: 900 clamp(2rem, 6vh, 3rem)/1 system-ui, sans-serif; }
+.face-button { font-family: system-ui, sans-serif; font-size: clamp(1.55rem, 5vh, 2.3rem) !important; }
+
+.timer-screen { background: #111; }
+
+.turn-surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  color: #fff;
+  background: #111;
+}
+
+.turn-arrow {
+  position: absolute;
+  inset: -5%;
+  background: var(--yellow);
+  clip-path: polygon(0 50%, 18% 3%, 18% 25%, 96% 25%, 96% 75%, 18% 75%, 18% 97%);
+  transition: background 180ms ease, transform 180ms ease, clip-path 180ms ease;
+}
+
+.turn-surface.blue .turn-arrow { background: var(--blue); transform: rotate(180deg); }
+
+.turn-surface.grace .turn-arrow {
+  inset: 50%;
+  width: min(46vw, 46vh);
+  height: min(46vw, 46vh);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--brown);
+  clip-path: none;
+}
+
+.time-display {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  z-index: 2;
+  color: #111;
+  font: 800 clamp(5rem, 22vw, 13.5rem)/1 "Share Tech Mono", monospace;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 0 rgb(255 255 255 / 28%);
+  white-space: nowrap;
+}
+
+.turn-surface.blue .time-display,
+.turn-surface.grace .time-display { color: #fff; text-shadow: 0 3px 5px rgb(0 0 0 / 55%); }
+
+.timer-status {
+  position: absolute;
+  left: 50%;
+  bottom: max(7px, env(safe-area-inset-bottom));
+  z-index: 2;
+  translate: -50% 0;
+  max-width: 52vw;
+  overflow: hidden;
+  color: rgb(0 0 0 / 66%);
+  font: 800 clamp(0.58rem, 1.7vw, 0.85rem)/1.2 system-ui, sans-serif;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.turn-surface.blue .timer-status,
+.turn-surface.grace .timer-status { color: rgb(255 255 255 / 80%); }
+
+.controls-layer {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.timer-top-controls { top: max(8px, env(safe-area-inset-top)); }
+.timer-bottom-controls { bottom: max(9px, env(safe-area-inset-bottom)); }
+
+.boost-button span {
+  display: grid;
+  place-items: center;
+  width: 70%;
+  aspect-ratio: 1;
+  clip-path: polygon(50% 100%, 0 10%, 100% 10%);
+  background: #222831;
+  color: #fff;
+  font-size: 0.74em;
+}
+
+.overlay[hidden],
+.toast[hidden] { display: none; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  background: rgb(0 0 0 / 70%);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  position: relative;
+  max-width: min(94vw, 420px);
+  max-height: 95dvh;
+  overflow: auto;
+  padding: 18px;
+  border: 2px solid rgb(255 255 255 / 35%);
+  border-radius: 20px;
+  background: #f8f8f8;
+  color: #171a20;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.modal h2 { margin: 0 0 12px; text-align: center; font-size: 1.05rem; }
+.keypad-panel output { display: block; margin: 0 auto 12px; text-align: center; font: 700 3rem/1 "Share Tech Mono", monospace; }
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 68px);
+  gap: 8px;
+}
+
+.keypad-grid button {
+  width: 68px;
+  height: 56px;
+  border-radius: 12px;
+  background: #e2e4e8;
+  color: #171a20;
+  font: 800 1.25rem/1 system-ui, sans-serif;
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 14%);
+}
+
+.keypad-grid .enter-key { background: #3fae49; color: #fff; }
+.install-panel { padding: 26px; font-family: system-ui, sans-serif; line-height: 1.5; }
+
+.modal-close {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  padding: 3px 7px;
+  background: transparent;
+  color: #171a20;
+  font-size: 1.8rem;
+}
+
+.toast {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  width: max-content;
+  max-width: 90vw;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #171a20;
+  color: #fff;
+  font: 700 0.85rem/1.35 system-ui, sans-serif;
+  text-align: center;
+  box-shadow: 0 10px 40px rgb(0 0 0 / 45%);
+}
+
+@media (orientation: portrait) {
+  .settings-header { grid-template-columns: 1fr 1fr; }
+  .settings-header h1 { grid-column: 1 / -1; grid-row: 1; }
+  .quiet-link, .quiet-button { grid-row: 2; }
+  .team-pickers { gap: 12px; }
+  .team-picker { min-height: 28vh; }
+  .team-picker strong { font-size: clamp(2.1rem, 12vw, 4rem); }
+  .turn-arrow { inset: 0; clip-path: polygon(0 50%, 22% 19%, 22% 33%, 100% 33%, 100% 67%, 22% 67%, 22% 81%); }
+  .time-display { font-size: clamp(4.2rem, 24vw, 7rem); }
+  .timer-status { bottom: 22%; }
+}
+
+@media (max-height: 430px) {
+  .settings-header { min-height: 32px; }
+  .team-picker { min-height: 104px; }
+  .team-picker strong { font-size: clamp(2.2rem, 7vw, 4.3rem); }
+  .hex-button.medium { width: clamp(52px, 17vh, 70px); }
+  .hex-button.large { width: clamp(66px, 22vh, 90px); }
+  .timer-status { display: none; }
+  .keypad-panel { display: grid; grid-template-columns: auto auto; column-gap: 18px; align-items: center; }
+  .keypad-panel h2, .keypad-panel output { grid-column: 1; }
+  .keypad-grid { grid-column: 2; grid-row: 1 / span 2; grid-template-columns: repeat(3, 58px); gap: 5px; }
+  .keypad-grid button { width: 58px; height: 42px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}
