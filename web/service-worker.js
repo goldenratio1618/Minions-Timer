@@ -1,8 +1,8 @@
 "use strict";
 
-const CACHE_NAME = "minions-timer-v1";
+const CACHE_NAME = "minions-timer-v2";
 const APP_SHELL = [
-  "/timer/", "/timer/index.html", "/timer/style.css", "/timer/timer-core.js", "/timer/app.js", "/timer/manifest.webmanifest",
+  "/timer/", "/timer/index.html", "/timer/style.css?v=20260813-arrow-fit", "/timer/timer-core.js", "/timer/app.js", "/timer/manifest.webmanifest",
   "/timer/assets/icon.svg", "/timer/assets/icon-192.png", "/timer/assets/icon-512.png",
   "/timer/assets/orbitron_wght.ttf", "/timer/assets/share_tech_mono_regular.ttf",
   "/timer/assets/beep.wav", "/timer/assets/buzzer_sound.wav", "/timer/assets/ding.wav",

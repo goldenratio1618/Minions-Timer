@@ -200,7 +200,11 @@ a:focus-visible {
 
 .turn-arrow {
   position: absolute;
-  inset: -5%;
+  --arrow-gutter: clamp(6px, 1.5vmin, 14px);
+  top: max(var(--arrow-gutter), env(safe-area-inset-top));
+  right: max(var(--arrow-gutter), env(safe-area-inset-right));
+  bottom: max(var(--arrow-gutter), env(safe-area-inset-bottom));
+  left: max(var(--arrow-gutter), env(safe-area-inset-left));
   background: var(--yellow);
   clip-path: polygon(0 50%, 18% 3%, 18% 25%, 96% 25%, 96% 75%, 18% 75%, 18% 97%);
   transition: background 180ms ease, transform 180ms ease, clip-path 180ms ease;
@@ -356,7 +360,7 @@ a:focus-visible {
   .team-pickers { gap: 12px; }
   .team-picker { min-height: 28vh; }
   .team-picker strong { font-size: clamp(2.1rem, 12vw, 4rem); }
-  .turn-arrow { inset: 0; clip-path: polygon(0 50%, 22% 19%, 22% 33%, 100% 33%, 100% 67%, 22% 67%, 22% 81%); }
+  .turn-arrow { clip-path: polygon(0 50%, 22% 19%, 22% 33%, 100% 33%, 100% 67%, 22% 67%, 22% 81%); }
   .time-display { font-size: clamp(4.2rem, 24vw, 7rem); }
   .timer-status { bottom: 22%; }
 }
